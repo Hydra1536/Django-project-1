@@ -8,5 +8,5 @@ class Contact(models.Model):
     comments = models.TextField(blank=True, null=True)    
     date = models.DateField()
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
