@@ -2,22 +2,22 @@
 {% block title %} Home {% endblock title %}
 {% block body %}
 
-<div class="container my-5" >
+<div class="container my-5">
 
-  <!-- Carousel Section -->
+  <!-- ✅ Carousel Section -->
   <div id="carouselExample" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active">
         <img src="https://images.unsplash.com/photo-1580915411954-282cb1b0d780?auto=format&fit=crop&w=1200&q=80" 
-             class="d-block w-100" alt="Ice Cream Cone" height="350">
+             class="d-block w-100 rounded" alt="Ice Cream Cone" height="350">
       </div>
       <div class="carousel-item">
         <img src="https://media.istockphoto.com/id/2232131965/photo/chocolate-covered-ice-cream-bars-with-sprinkled-nuts-isolate-on-white-with-clipping-path.jpg?s=2048x2048&w=is&k=20&c=TWCzZBeqaz9WrKya1Bs84JuaxzATYK72GsqxpLjt6lM=" 
-             class="d-block w-100" alt="Chocolate Bar" height="350">
+             class="d-block w-100 rounded" alt="Chocolate Bar" height="350">
       </div>
       <div class="carousel-item">
         <img src="https://images.unsplash.com/photo-1729462043494-dda667c69fc5?auto=format&fit=crop&w=1200&q=80" 
-             class="d-block w-100" alt="Ice Cream Cup" height="350">
+             class="d-block w-100 rounded" alt="Ice Cream Cup" height="350">
       </div>
     </div>
 
@@ -29,69 +29,22 @@
     </button>
   </div>
 
-  <!-- Card Grid Section -->
+<!-- ✅ Dynamic Product Cards -->
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-      <div class="card h-100">
-        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80" 
-             class="card-img-top" alt="Nature 1" height="200">
+    {% for product in products %}  <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
         <div class="card-body">
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted">{{ product.description }}</p>
+          <h6 class="fw-bold text-success">৳ {{ product.price }} BDT</h6>
         </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline-secondary btn-sm">Edit</button>
-          <small class="text-muted float-end">9 mins</small>
+        <div class="card-footer bg-transparent border-0">
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary w-100">🛒 Add to Cart</a>
+          
         </div>
       </div>
     </div>
-
-    <div class="col">
-      <div class="card h-100">
-        <img src="https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&w=600&q=80" 
-             class="card-img-top" alt="Beach" height="200">
-        <div class="card-body">
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline-secondary btn-sm">Edit</button>
-          <small class="text-muted float-end">9 mins</small>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card h-100">
-        <img src="https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&w=600&q=80" 
-             class="card-img-top" alt="Water Splash" height="200">
-        <div class="card-body">
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline-secondary btn-sm">Edit</button>
-          <small class="text-muted float-end">9 mins</small>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card h-100">
-        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" 
-             class="card-img-top" alt="Mountain" height="200">
-        <div class="card-body">
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-sm">View</button>
-          <button class="btn btn-outline-secondary btn-sm">Edit</button>
-          <small class="text-muted float-end">9 mins</small>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+    {% endfor %}  </div>
 
 {% endblock body %}

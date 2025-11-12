@@ -17,10 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from home import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.index, name="home"),
     path("about", views.about, name="about"),
-    path("services", views.services, name="services"),
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/', views.cart_view, name='cart'),
+    path('remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('confirm-order/', views.confirm_order, name='confirm_order'),
     path("contact", views.contact, name="contact"),
+    path('my_orders/', views.my_orders, name='my_orders'),
+    path('delete-order/<int:order_id>/', views.delete_order, name='delete_order'),
+    path('search/', views.search, name='search'),
+
     ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

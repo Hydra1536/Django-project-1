@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart{% endblock %}
+{% block body %}
+
+<div class="container my-5">
+  <h2 class="mb-4">🛒 Your Cart</h2>
+
+  {% if products %}
+    <table class="table table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price (BDT)</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in products %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.product.price }}</td>
+          <td>{{ item.subtotal }}</td>
+          <td>
+            <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger btn-sm">Remove</a>
+          </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="3" class="text-end fw-bold">Total</td>
+          <td colspan="2" class="fw-bold">{{ total }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4 class="mt-5">🧾 Confirm Your Order</h4>
+    <form method="POST" action="{% url 'confirm_order' %}" class="row g-3">
+      {% csrf_token %}
+      <div class="col-md-6">
+        <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+      </div>
+      <div class="col-md-6">
+        <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
+      </div>
+      <div class="col-12">
+        <textarea name="address" class="form-control" placeholder="Delivery Address" required></textarea>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-success w-100">Confirm Order</button>
+      </div>
+    </form>
+
+  {% else %}
+    <div class="alert alert-warning mt-4">Your cart is empty.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

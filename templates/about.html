@@ -1,4 +1,63 @@
 {% extends 'base.html' %}
-{% block title %} About us {% endblock title%}
-{% block body %}This is page of About us website.
+{% block title %} About Our Sweet Shop {% endblock title %}
+{% block body %}
+
+<div class="container my-5">
+    
+    <header class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Sweet Moments, Crafted with Love</h1>
+        <p class="lead text-muted">More than just a shop, we're a destination for joy and flavor.</p>
+    </header>
+
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 order-md-2">
+            <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/dd5a4b145951329.62a7cba31aa21.png" 
+                 class="img-fluid rounded shadow-lg" alt="Artisanal Ice Cream Shop Interior">
+        </div>
+        <div class="col-md-6 order-md-1">
+            <h2 class="h3 fw-semibold">Our Story & Philosophy</h2>
+            <hr class="w-25 text-primary">
+            <p>Founded in 2020 with a single, simple idea: to bring unforgettable sweetness to our community. We believe that the best desserts start with the best ingredients. That's why we source fresh milk, seasonal fruits, and premium cocoa, turning them into handcrafted ice creams and confections daily.</p>
+            <p>Our philosophy is centered on quality, creativity, and joy. Every scoop, swirl, and sprinkle is a testament to our dedication to giving you a perfect moment of indulgence. We are passionate about traditional methods combined with modern, surprising flavors.</p>
+        </div>
+    </div>
+    
+    <hr class="my-5">
+
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <img src="https://www.shutterstock.com/shutterstock/photos/1715911312/display_1500/stock-photo-the-process-of-making-ice-cream-closeup-male-hands-applied-the-ice-cream-in-the-container-1715911312.jpg" 
+                 class="img-fluid rounded shadow-lg" alt="Person hand-making ice cream">
+        </div>
+        <div class="col-md-6">
+            <h2 class="h3 fw-semibold">Meet the Founder: Md Rezaul Karim</h2>
+            <hr class="w-25 text-primary">
+            <p>Hello! I'm Md Rezaul Karim, and my passion for sweets began with my family’s traditional recipes. After years of experimenting with flavors and techniques, I decided to open this shop to share that magic with everyone.</p>
+            <p>We see our customers as family. Come visit us, say hello, and let us recommend a flavor that will make your day a little brighter. We're proud to be a local, independent business driven by the love of flavor and community.</p>
+        </div>
+    </div>
+
+    <section class="text-center my-5 py-5 bg-light rounded shadow-sm">
+        <h3 class="fw-bold mb-4 text-secondary">Our Core Values</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                <h4 class="h5 mt-2">Premium Ingredients</h4>
+                <p class="text-muted">We only use the highest quality, ethically sourced components in all our products.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-hand-holding-heart fa-3x text-danger mb-3"></i>
+                <h4 class="h5 mt-2">Handcrafted Daily</h4>
+                <p class="text-muted">Every item is made in small, fresh batches to ensure the perfect texture and taste.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                <h4 class="h5 mt-2">Community First</h4>
+                <p class="text-muted">We strive to be a welcoming spot where friends and families can share sweet moments.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
 {% endblock body %}

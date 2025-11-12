@@ -28,13 +28,10 @@
               <a class="nav-link" href="/about">About Us</a>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Services</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Cone</a></li>
-                <li><a class="dropdown-item" href="#">Chocobar</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Cup</a></li>
-              </ul>
+              <a ca class="nav-link" href="/cart">My Cart</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a ca class="nav-link" href="/my_orders">My orders</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/contact">Contact</a>
@@ -42,19 +39,15 @@
           </ul>
 
           <!-- Simple Search -->
-          <form class="d-flex ms-lg-3" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-light" type="submit">Search</button>
-          </form>
+          <form class="d-flex ms-lg-3" role="search" action="/search/" method="get">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q" required>
+  <button class="btn btn-outline-light" type="submit">Search</button>
+</form>
+
         </div>
       </div>
     </nav>
-<div class="alert alert-warning alert-dismissible fade show my-0" role="alert">
-<strong>Successfully submitted!!!</strong>We will reply you soon.
-<button type="button" class="btn-close" data-bs-dismiss="alert">
-<span aria-hidden="true">&times;</span>
-</button>
-</div>
+
     <!--  Body Section -->
     {% block body %}{% endblock body %}
 
