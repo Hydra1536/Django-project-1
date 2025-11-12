@@ -1,6 +1,6 @@
 # Django-project-1
 
-# Ice Cream Shop E-Commerce Platform 🍦
+# Ice Cream Shop E-Commerce Platform
 
 A full-stack e-commerce application built with **Django** for an ice cream/sweet shop. This project features a complete ordering workflow, user-side order management, search functionality, and a dedicated admin interface for CRUD operations.
 
