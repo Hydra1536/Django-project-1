@@ -35,22 +35,13 @@
       </tbody>
     </table>
 
-    <h4 class="mt-5">🧾 Confirm Your Order</h4>
-    <form method="POST" action="{% url 'confirm_order' %}" class="row g-3">
-      {% csrf_token %}
-      <div class="col-md-6">
-        <input type="text" name="name" class="form-control" placeholder="Full Name" required>
-      </div>
-      <div class="col-md-6">
-        <input type="text" name="phone" class="form-control" placeholder="Phone Number" required>
-      </div>
-      <div class="col-12">
-        <textarea name="address" class="form-control" placeholder="Delivery Address" required></textarea>
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-success w-100">Confirm Order</button>
-      </div>
-    </form>
+<h4 class="mt-5">🧾 Confirm Your Order</h4>
+<form method="POST" action="{% url 'confirm_order' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success w-100">Confirm Order</button>
+</form>
+
 
   {% else %}
     <div class="alert alert-warning mt-4">Your cart is empty.</div>

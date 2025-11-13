@@ -1,17 +1,14 @@
 {% extends 'base.html' %}
-
 {% block title %} Contact {% endblock title %}
-
 {% block body %}
+
 {% if success %}
-<div class="alert alert-warning alert-dismissible fade show my-0" role="alert">
-  <strong>Successfully submitted!</strong> We will reply to you soon.
+<div class="alert alert-success alert-dismissible fade show my-0" role="alert">
+  <strong>✅ Successfully submitted!</strong> We will reply to you soon.
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
 
-
-<!-- Banner Image -->
 <div class="container">
   <img src="https://static.vecteezy.com/system/resources/previews/012/111/656/large_2x/cute-ice-cream-mascot-pick-up-the-phone-answering-phone-calls-vector.jpg"
        height="400"
@@ -19,31 +16,43 @@
        alt="Old phone image">
 </div>
 
-<!-- Contact Form Section -->
 <div class="container mb-5 py-4">
   <h1 class="text-center mb-4">Contact Us</h1>
 
-  <form method="post" action="/contact">
+  <form method="POST" novalidate>
     {% csrf_token %}
+    {{ form.non_field_errors }}
 
     <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+      {{ form.name.label_tag }}
+      {{ form.name }}
+      {% for error in form.name.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
     </div>
 
     <div class="mb-3">
-      <label for="email" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+      {{ form.email.label_tag }}
+      {{ form.email }}
+      {% for error in form.email.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
     </div>
 
     <div class="mb-3">
-      <label for="phone" class="form-label">Phone Number</label>
-      <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+      {{ form.phone.label_tag }}
+      {{ form.phone }}
+      {% for error in form.phone.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
     </div>
 
     <div class="mb-3">
-      <label for="comment" class="form-label">Comments</label>
-      <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Enter your comments"></textarea>
+      {{ form.comments.label_tag }}
+      {{ form.comments }}
+      {% for error in form.comments.errors %}
+        <div class="text-danger">{{ error }}</div>
+      {% endfor %}
     </div>
 
     <div class="text-center">
@@ -51,4 +60,5 @@
     </div>
   </form>
 </div>
+
 {% endblock body %}

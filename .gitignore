@@ -1,0 +1,32 @@
+# .gitignore for Django Projects
+
+# 1. Byte-compiled / object files
+#####################################
+*.pyc
+__pycache__/
+
+# 2. Virtual Environments
+###########################
+/env/
+/venv/
+
+# 3. Database Files
+#####################
+# SQLite database file
+/db.sqlite3
+
+# 4. Media and Secret Files
+#############################
+# User-uploaded media
+/media/
+# Local settings (if separated from settings.py)
+/Hello/local_settings.py
+*.env
+static\test.txt
+
+# 5. OS/Editor Files
+######################
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
