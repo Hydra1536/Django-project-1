@@ -1,5 +1,7 @@
 from django.contrib import admin
-from home.models import Contact, Product, Order, OrderItem
+
+from home.models import Contact, Order, OrderItem, Product
+
 # Register your models here.
 admin.site.register(Contact)
 admin.site.register(Product)

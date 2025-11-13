@@ -21,7 +21,7 @@ __pycache__/
 /media/
 # Local settings (if separated from settings.py)
 /Hello/local_settings.py
-*.env
+.env
 static\test.txt
 
 # 5. OS/Editor Files
