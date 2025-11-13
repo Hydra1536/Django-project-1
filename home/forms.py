@@ -1,6 +1,5 @@
 from django import forms
-from home.models import Contact
-from home.models import Order
+from home.models import Contact, Order
 
 class ContactForm(forms.ModelForm):
     class Meta:
@@ -31,27 +30,8 @@ class ContactForm(forms.ModelForm):
         if len(comments) < 10:
             raise forms.ValidationError("Comments must be at least 10 characters long.")
         return comments
+
 class OrderForm(forms.ModelForm):
-    class Meta:
-        model = Order
-        fields = ['customer_name', 'customer_phone', 'customer_address']
-        widgets = {
-            'customer_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name'}),
-            'customer_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
-            'customer_address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Delivery Address'}),
-        }
-
-    def clean_customer_phone(self):
-        phone = self.cleaned_data['customer_phone']
-        if not phone.isdigit() or len(phone) < 10:
-            raise forms.ValidationError("Enter a valid phone number")
-        return phone
-
-    def clean_customer_address(self):
-        address = self.cleaned_data['customer_address']
-        if len(address) < 10:
-            raise forms.ValidationError("Address is too short")
-        return address
     class Meta:
         model = Order
         fields = ['customer_name', 'phone', 'address']
@@ -69,10 +49,8 @@ class OrderForm(forms.ModelForm):
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone', '').strip()
-        if not phone.isdigit():
-            raise forms.ValidationError("Phone number must contain only digits.")
-        if len(phone) < 10:
-            raise forms.ValidationError("Phone number must be at least 10 digits.")
+        if not phone.isdigit() or len(phone) < 11:
+            raise forms.ValidationError("Enter a valid phone number (at least 10 digits).")
         return phone
 
     def clean_address(self):

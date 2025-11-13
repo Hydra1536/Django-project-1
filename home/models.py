@@ -10,7 +10,6 @@ class Contact(models.Model):
     def __str__(self):
         return f"Message from {self.name} - {self.email}"
 
-
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -19,7 +18,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -37,7 +35,6 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name}"
 
-
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -45,3 +42,4 @@ class OrderItem(models.Model):
 
     def item_total(self):
         return self.quantity * self.product.price
+

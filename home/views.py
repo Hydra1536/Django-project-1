@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from datetime import datetime
-from home.models import Contact, Product, Order, OrderItem, CartItem
+from home.models import Contact, Product, Order, OrderItem
 from django.contrib import messages
 from decimal import Decimal
 from django.db.models import Q
-from home.forms import ContactForm  # ✅ import the form
-from home.forms import OrderForm
+from home.forms import ContactForm  , OrderForm
 
 
 def index(request):
@@ -57,17 +56,21 @@ def cart_view(request):
 
     products_in_cart = []
     total = Decimal('0.00')
-
-    for product_id, quantity in cart.items():
-        product_qs = Product.objects.filter(id=product_id)
-        if product_qs.exists():
-            product = product_qs.first()
-            subtotal = product.price * Decimal(quantity)
-            products_in_cart.append({'product': product, 'quantity': quantity, 'subtotal': subtotal})
+    for prod_id, qty in cart.items():
+        try:
+            product = Product.objects.get(id=prod_id)
+            subtotal = product.price * qty
+            products_in_cart.append({'product': product, 'quantity': qty, 'subtotal': subtotal})
             total += subtotal
+        except Product.DoesNotExist:
+            continue
 
-    return render(request, 'cart.html', {'products': products_in_cart, 'total': total})
-
+    form = OrderForm()  # Blank form for customer info
+    return render(request, 'cart.html', {
+        'products': products_in_cart,
+        'total': total,
+        'form': form,
+    })
 
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -81,37 +84,47 @@ def remove_from_cart(request, product_id):
 
 
 def confirm_order(request):
-    cart_items = CartItem.objects.all()
-    total = sum(item.product.price * item.quantity for item in cart_items)
+    cart = request.session.get('cart', {})
+    if not isinstance(cart, dict):
+        cart = {}
+
+    products_in_cart = []
+    total = Decimal('0.00')
+    for prod_id, qty in cart.items():
+        try:
+            product = Product.objects.get(id=prod_id)
+            subtotal = product.price * qty
+            products_in_cart.append({'product': product, 'quantity': qty, 'subtotal': subtotal})
+            total += subtotal
+        except Product.DoesNotExist:
+            continue
 
     if request.method == "POST":
         form = OrderForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and products_in_cart:
             order = form.save(commit=False)
             order.total_price = total
-            order.status = "Order Listed"
+            order.status = 'listed'
             order.save()
 
-            # create OrderItems for each CartItem
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity,
-                    subtotal=item.product.price * item.quantity
-                )
+            for item in products_in_cart:
+                OrderItem.objects.create(order=order, product=item['product'], quantity=item['quantity'])
 
-            cart_items.delete()  # clear the cart after confirming order
+            request.session['cart'] = {}
+            request.session.modified = True
+
             messages.success(request, "✅ Your order has been placed successfully!")
-            return redirect("orders")
-    else:
-        form = OrderForm()
+            return render(request, 'order_confirmed.html', {'order': order})
+        else:
+            # 🔥 Re-render form with validation errors
+            messages.error(request, "Please fix the highlighted errors below.")
+            return render(request, 'cart.html', {
+                'products': products_in_cart,
+                'total': total,
+                'form': form
+            })
 
-    return render(request, "confirm_order.html", {"form": form, "cart_items": cart_items, "total": total})
-def my_orders(request):
-    orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'my_orders.html', {'orders': orders})
-
+    return redirect('cart')
 
 def delete_order(request, order_id):
     order_qs = Order.objects.filter(id=order_id)
@@ -127,9 +140,30 @@ def delete_order(request, order_id):
         messages.warning(request, "⚠️ Cannot delete order once it's on the way or delivered.")
     return redirect('my_orders')
 
+def my_orders(request):
+    orders = Order.objects.all().order_by('-created_at')
+    return render(request, 'my_orders.html', {'orders': orders})
+
 
 def search(request):
     query = request.GET.get('q', '').strip()
+    products = []
+    orders = []
+    if query:
+        products = Product.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )
+        orders = Order.objects.filter(
+            Q(customer_name__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(items__product__name__icontains=query)
+        ).distinct()
+    return render(request, 'search_results.html', {
+        'query': query,
+        'products': products,
+        'orders': orders,
+    })
+
     products, orders = [], []
 
     if query:

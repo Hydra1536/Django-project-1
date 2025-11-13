@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Your Cart{% endblock %}
 {% block body %}
-
 <div class="container my-5">
   <h2 class="mb-4">🛒 Your Cart</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
 
   {% if products %}
     <table class="table table-bordered align-middle">
@@ -23,9 +31,7 @@
           <td>{{ item.quantity }}</td>
           <td>{{ item.product.price }}</td>
           <td>{{ item.subtotal }}</td>
-          <td>
-            <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger btn-sm">Remove</a>
-          </td>
+          <td><a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger btn-sm">Remove</a></td>
         </tr>
         {% endfor %}
         <tr>
@@ -35,17 +41,43 @@
       </tbody>
     </table>
 
-<h4 class="mt-5">🧾 Confirm Your Order</h4>
-<form method="POST" action="{% url 'confirm_order' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-success w-100">Confirm Order</button>
-</form>
+    <h4 class="mt-5">🧾 Confirm Your Order</h4>
+    <form method="POST" action="{% url 'confirm_order' %}" class="row g-3">
+      {% csrf_token %}
+      
+      <!-- Full Name Field -->
+      <div class="col-md-6">
+        {{ form.customer_name.label_tag }}
+        {{ form.customer_name }}
+        {% for error in form.customer_name.errors %}
+          <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
 
+      <!-- Phone Field -->
+      <div class="col-md-6">
+        {{ form.phone.label_tag }}
+        {{ form.phone }}
+        {% for error in form.phone.errors %}
+          <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
 
+      <!-- Address Field -->
+      <div class="col-12">
+        {{ form.address.label_tag }}
+        {{ form.address }}
+        {% for error in form.address.errors %}
+          <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-success w-100">Confirm Order</button>
+      </div>
+    </form>
   {% else %}
     <div class="alert alert-warning mt-4">Your cart is empty.</div>
   {% endif %}
 </div>
-
 {% endblock %}
