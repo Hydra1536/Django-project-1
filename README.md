@@ -63,8 +63,8 @@ Follow these steps to get a copy of the project up and running on your local mac
 3.  **Install Dependencies:**
 
     ```bash
-    # Install Django and any other dependencies
-    pip install django
+    # Install all required dependencies
+    pip install -r requirements.txt
     ```
 
 4.  **Run Migrations:**

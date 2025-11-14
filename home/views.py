@@ -1,14 +1,15 @@
 from datetime import datetime
 from decimal import Decimal
+
 from django.contrib import messages
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from home.forms import ContactForm, OrderForm
-from home.models import Contact, Order, OrderItem, Product
+from home.models import Order, OrderItem, Product
 
 
 # -------------------- BASIC PAGES --------------------
@@ -55,16 +56,48 @@ def cart_view(request):
     products_in_cart, total = [], Decimal("0.00")
 
     for pid, qty in cart.items():
-        try:
-            product = Product.objects.get(id=pid)
+        product = Product.objects.filter(id=pid).first()
+        if product:
             subtotal = product.price * qty
-            products_in_cart.append({"product": product, "quantity": qty, "subtotal": subtotal})
+            products_in_cart.append(
+                {"product": product, "quantity": qty, "subtotal": subtotal}
+            )
             total += subtotal
-        except Product.DoesNotExist:
-            continue
 
-    form = OrderForm()
-    return render(request, "cart.html", {"products": products_in_cart, "total": total, "form": form})
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            if not cart:
+                messages.error(request, "Your cart is empty!")
+                return redirect("cart")
+
+            order = form.save(commit=False)
+            order.total_price = total
+            order.status = "listed"
+            order.save()
+
+            # Add ordered items
+            for pid, qty in cart.items():
+                product = Product.objects.filter(id=pid).first()
+                if product:
+                    OrderItem.objects.create(order=order, product=product, quantity=qty)
+
+            # Clear session cart after placing order
+            request.session["cart"] = {}
+            request.session.modified = True
+
+            return redirect("order_confirmed", order_id=order.id)
+        else:
+            # Form is invalid, re-render with errors
+            pass
+    else:
+        form = OrderForm()
+
+    return render(
+        request,
+        "cart.html",
+        {"products": products_in_cart, "total": total, "form": form},
+    )
 
 
 def remove_from_cart(request, product_id):
@@ -77,6 +110,7 @@ def remove_from_cart(request, product_id):
 
 
 # -------------------- RESTFUL ORDER ENDPOINTS --------------------
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -96,11 +130,9 @@ def create_order(request):
     total = Decimal("0.00")
 
     for pid, qty in cart.items():
-        try:
-            product = Product.objects.get(id=pid)
+        product = Product.objects.filter(id=pid).first()
+        if product:
             total += product.price * qty
-        except Product.DoesNotExist:
-            continue
 
     order.total_price = total
     order.status = "listed"
@@ -108,24 +140,27 @@ def create_order(request):
 
     # Add ordered items
     for pid, qty in cart.items():
-        product = Product.objects.get(id=pid)
-        OrderItem.objects.create(order=order, product=product, quantity=qty)
+        product = Product.objects.filter(id=pid).first()
+        if product:
+            OrderItem.objects.create(order=order, product=product, quantity=qty)
 
     # Clear session cart after placing order
     request.session["cart"] = {}
     request.session.modified = True
 
-    return JsonResponse({"message": "Order placed successfully!", "order_id": order.id})
+    return redirect("order_confirmed", order_id=order.id)
 
 
 @csrf_exempt
 @require_http_methods(["PUT", "DELETE"])
 def update_or_delete_order(request, pk):
     """
-    PUT /orders/<id>/?status=on_the_way → Update order status  
+    PUT /orders/<id>/?status=on_the_way → Update order status
     DELETE /orders/<id>/ → Delete order (only if listed)
     """
-    order = get_object_or_404(Order, pk=pk)
+    order = Order.objects.filter(pk=pk).first()
+    if not order:
+        return JsonResponse({"error": "Order not found"}, status=404)
 
     if request.method == "PUT":
         new_status = request.GET.get("status")
@@ -138,7 +173,8 @@ def update_or_delete_order(request, pk):
     elif request.method == "DELETE":
         if order.status != "listed":
             return JsonResponse(
-                {"error": "Cannot delete order that is On the Way or Delivered"}, status=400
+                {"error": "Cannot delete order that is On the Way or Delivered"},
+                status=400,
             )
         order.delete()
         return JsonResponse({"message": "Order deleted successfully"})
@@ -148,6 +184,29 @@ def update_or_delete_order(request, pk):
 def my_orders(request):
     orders = Order.objects.all().order_by("-created_at")
     return render(request, "my_orders.html", {"orders": orders})
+
+
+def order_confirmed(request, order_id):
+    order = Order.objects.filter(id=order_id).first()
+    if not order:
+        return render(
+            request, "404.html", status=404
+        )  # Assuming a 404 template exists, or handle differently
+    return render(request, "order_confirmed.html", {"order": order})
+
+
+@require_http_methods(["POST"])
+def delete_order(request, order_id):
+    order = Order.objects.filter(id=order_id).first()
+    if not order:
+        messages.error(request, "Order not found.")
+        return redirect("my_orders")
+    if order.status != "listed":
+        messages.error(request, "Cannot delete order that is On the Way or Delivered.")
+        return redirect("my_orders")
+    order.delete()
+    messages.success(request, "Order deleted successfully.")
+    return redirect("my_orders")
 
 
 # -------------------- SEARCH --------------------

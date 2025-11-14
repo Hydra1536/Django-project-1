@@ -80,7 +80,7 @@ class OrderForm(forms.ModelForm):
         phone = self.cleaned_data.get("phone", "").strip()
         if not phone.isdigit() or len(phone) < 11:
             raise forms.ValidationError(
-                "Enter a valid phone number (at least 10 digits)."
+                "Enter a valid phone number (at least 11 digits)."
             )
         return phone
 
