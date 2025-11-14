@@ -107,7 +107,7 @@ The application will now be running at `http://127.0.0.1:8000/`.
 
 ## 👨‍💻 Developer Information
 
-**Project Name:** Hello
+**Project Name:** Ice Cream Shop
 **Main App:** home
 **Developer:** Md Rezaul Karim
 
